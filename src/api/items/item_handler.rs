@@ -10,7 +10,6 @@ pub async fn get_all_items(
         .fetch_all(&state.db)
         .await;
 
-    
     if query_result.is_err() {
         if query_result.is_err() {
             let err_respone = serde_json::json!({
@@ -20,13 +19,20 @@ pub async fn get_all_items(
             return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(err_respone)));
         }
     }
-    todo!()
-}
 
+    let items = query_result.unwrap();
+
+    let json_response = serde_json::json!({
+        "status": "success",
+        "results": items.len(),
+        "notes": items
+    });
+    Ok(Json(json_response))
+}
 
 pub async fn create_item() {}
 pub async fn update_item() {}
 
 pub async fn delete_item() {}
 
-pub async fn get_item_by_id(){}
+pub async fn get_item_by_id() {}
