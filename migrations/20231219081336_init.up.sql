@@ -14,7 +14,7 @@ CREATE TABLE
 IF NOT EXISTS item (
      item_id  UUID PRIMARY KEY NOT NULL DEFAULT (uuid_generate_v4()),
      item_name Varchar(255) NOT NULL UNIQUE,
-     item_price INT NOT NULL,
+     item_price NUMERIC(5,2) NOT NULL,
      item_qty SMALLINT NOT NULL,
      category_id UUID NOT NULL,
      created_at TIMESTAMP 

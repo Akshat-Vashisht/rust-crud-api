@@ -5,6 +5,6 @@ use axum::Router;
 
 pub fn config(state: AppState) -> Router {
     Router::new()
-        .nest("/category", category_routes(state))
-        .nest("/item", item_routes(state))
+        .nest("/category", category_routes(state.clone()))
+        .nest("/item", item_routes(state.clone()))
 }
