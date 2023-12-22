@@ -21,3 +21,19 @@ IF NOT EXISTS item (
      WITH 
         TIME ZONE DEFAULT NOW()
 );
+
+
+CREATE TABLE
+    IF NOT EXISTS users(
+        id UUID PRIMARY KEY NOT NULL DEFAULT (uuid_generate_v4()),
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        verified BOOLEAN NOT NULL DEFAULT FALSE,
+        password VARCHAR(100) NOT NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'user',
+        created_at TIMESTAMP
+        WITH 
+            TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX user_email_idx ON users (email);

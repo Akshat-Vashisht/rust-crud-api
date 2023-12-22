@@ -1,4 +1,6 @@
+mod config;
 mod route;
+mod jwtauth;
 
 use axum::{
     http::{
@@ -8,11 +10,13 @@ use axum::{
     Router,
 };
 
+use config::Config;
 use dotenv::dotenv;
 
 pub mod api {
     pub mod category;
     pub mod items;
+    pub mod user;
 }
 
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
@@ -21,6 +25,7 @@ use tower_http::cors::CorsLayer;
 #[derive(Clone, Debug)]
 pub struct AppState {
     db: Pool<Postgres>,
+    env: Config,
 }
 
 #[tokio::main]
@@ -28,11 +33,11 @@ pub struct AppState {
 async fn main() {
     dotenv().ok();
 
-    let database_url = std::env::var("DATABASE_URL").expect("Datbase URL must be provided");
+    let config = Config::new();
 
     let pool = match PgPoolOptions::new()
         .max_connections(5)
-        .connect(&database_url)
+        .connect(&config.database_url)
         .await
     {
         Ok(pool) => {
@@ -44,7 +49,10 @@ async fn main() {
             std::process::exit(1);
         }
     };
-    let state = AppState { db: pool };
+    let state = AppState {
+        db: pool,
+        env: config,
+    };
 
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:8080".parse::<HeaderValue>().unwrap())
